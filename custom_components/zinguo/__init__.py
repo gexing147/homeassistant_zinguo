@@ -64,8 +64,6 @@ class ZinguoUpdateManager(threading.Thread):
         threading.Thread.__init__(self)
         self._run = False
         self._lock = threading.Lock()
-        _LOGGER.debug('ZINGUO : %s',config[DOMAIN][CONF_MAC])
-        _LOGGER.debug('ZINGUO : %s',config[DOMAIN][CONF_TOKEN])
         self._zinguoSwitch = ZinguoSwitchB2(config[DOMAIN][CONF_USERNAME], config[DOMAIN][CONF_PASSWORD])
         self._hass = hass
 
