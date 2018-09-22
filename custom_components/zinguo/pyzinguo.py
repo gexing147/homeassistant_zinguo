@@ -58,10 +58,21 @@ class ZinguoSwitchB2():
         sha1.update(self.password.encode('utf-8'))
         hash_pass = sha1.hexdigest()
         data = {'account': self.masterUser, 'password': hash_pass}
-        r= requests.post(url, json=data, headers=headers)
+
+        try:
+            r= requests.post(url, json=data, headers=headers, timeout = 2)
+        except requests.exceptions.ConnectionError:
+            _LOGGER.debug('ZINGUO : ConnectionError')
+            return False
+        except:
+            _LOGGER.debug('ZINGUO : except')
+            return False
+
         json_data = json.loads(r.text)
         self.token = json_data['token']
         self.mac = json_data['deviceIds'][0]['mac']
+
+        return True
 
     def get_status(self):
         _LOGGER.debug('ZINGUO : get status1')
@@ -72,23 +83,38 @@ class ZinguoSwitchB2():
                 'x-access-token': self.token
                 }
         _LOGGER.debug('ZINGUO : get status3')
-        r = requests.get(url,headers=headers)
+
+        try:
+            r = requests.get(url,headers=headers, timeout = 2)
+        except requests.exceptions.ConnectionError:
+            _LOGGER.debug('ZINGUO : ConnectionError')
+            return False
+        except:
+            _LOGGER.debug('ZINGUO : except')
+            return False
+
         json_data = json.loads(r.text)
 
         _LOGGER.debug('ZINGUO : get status4')
-        self.warmingSwitch1StateOld = self.warmingSwitch1StateNew
-        self.warmingSwitch2StateOld = self.warmingSwitch2StateNew
-        self.windSwitchStateOld = self.windSwitchStateNew
-        self.lightSwitchStateOld = self.lightSwitchStateNew
-        self.ventilationSwitchStateOld = self.ventilationSwitchStateNew
+        if json_data != None:
+            self.warmingSwitch1StateOld = self.warmingSwitch1StateNew
+            self.warmingSwitch2StateOld = self.warmingSwitch2StateNew
+            self.windSwitchStateOld = self.windSwitchStateNew
+            self.lightSwitchStateOld = self.lightSwitchStateNew
+            self.ventilationSwitchStateOld = self.ventilationSwitchStateNew
 
-        self.warmingSwitch1StateNew = json_data[CONF_WARMING_SWITCH_1] #暖风一档
-        self.warmingSwitch2StateNew = json_data[CONF_WARMING_SWITCH_2] #暖风二档
-        self.windSwitchStateNew = json_data[CONF_WIND_SWITCH] #吹风
-        self.lightSwitchStateNew = json_data[CONF_LIGHT_SWITCH]  #照明
-        self.ventilationSwitchStateNew = json_data[CONF_VENTILATION_SWITCH] #排气
+            self.warmingSwitch1StateNew = json_data[CONF_WARMING_SWITCH_1] #暖风一档
+            self.warmingSwitch2StateNew = json_data[CONF_WARMING_SWITCH_2] #暖风二档
+            self.windSwitchStateNew = json_data[CONF_WIND_SWITCH] #吹风
+            self.lightSwitchStateNew = json_data[CONF_LIGHT_SWITCH]  #照明
+            self.ventilationSwitchStateNew = json_data[CONF_VENTILATION_SWITCH] #排气
 
-        self.temperatureState = json_data[CONF_TEMPERATURE]#温度
+            self.temperatureState = json_data[CONF_TEMPERATURE]#温度
+            return True
+        else:
+            _LOGGER.debug('ZINGUO : json data is null')
+            return False
+
 
 
     def get_state_change(self):
@@ -129,7 +155,16 @@ class ZinguoSwitchB2():
                 "setParamter":False,
                 "action":False,
                 "masterUser":self.masterUser}
-        r = requests.put(url, json=data, headers=headers)
+
+        try:
+            r = requests.put(url, json=data, headers=headers, timeout = 2)
+        except requests.exceptions.ConnectionError:
+            _LOGGER.debug('ZINGUO : ConnectionError')
+            return False
+        except:
+            _LOGGER.debug('ZINGUO : except')
+            return False
+
         json_data = json.loads(r.text)
         result = json_data['result']
         if requests != "设置成功":
