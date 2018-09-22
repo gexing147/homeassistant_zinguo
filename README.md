@@ -1,5 +1,6 @@
 # homeassistant_zinguo
 配置文件参考如下:
+```
  zinguo:
    username: 'username'
    password: 'passwd'
@@ -15,3 +16,4 @@
  sensor:
    - platform: zinguo
      temperature: 洗手间温度
+```
