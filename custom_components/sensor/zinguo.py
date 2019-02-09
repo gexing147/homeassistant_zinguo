@@ -54,7 +54,8 @@ class ZinguoSensor(Entity):
         return DEVICE_CLASS_TEMPERATURE
 
     def _handle_event(self, event):
-        eventMsg = json.loads(event.data)
+        """eventMsg = json.loads(event.data)"""
+        eventMsg = event.data
         _LOGGER.debug('ZINGUO : handle event start')
         if self._type in eventMsg:
             self._state = eventMsg[self._type]

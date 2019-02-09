@@ -79,7 +79,8 @@ class ZinguoSwitch(SwitchDevice):
                 _LOGGER.debug('ZINGUO : turn off')
                 self.schedule_update_ha_state()
     def _handle_event(self, event):
-        eventMsg = json.loads(event.data)
+        """eventMsg = json.loads(event.data)"""
+        eventMsg = event.data
         _LOGGER.debug('ZINGUO : handle event start')
         if self._type in eventMsg:
             _LOGGER.debug('ZINGUO : handle event %s' ,eventMsg[self._type])

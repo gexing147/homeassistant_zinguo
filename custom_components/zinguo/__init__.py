@@ -94,7 +94,8 @@ class ZinguoUpdateManager(threading.Thread):
         self._zinguoSwitch.get_status()
         self._zinguoSwitch.get_state_change()
         eventSensorMsg[CONF_TEMPERATURE] = self._zinguoSwitch.temperatureState
-        self._hass.bus.fire(CONF_EVENT_ZINGUO_SENSOR,json.dumps(eventSensorMsg))
+        _LOGGER.debug('ZINGUO : sensor msg:%s', json.dumps(eventSensorMsg))
+        self._hass.bus.fire(CONF_EVENT_ZINGUO_SENSOR,eventSensorMsg)
         if self._zinguoSwitch.warmingSwitch1StateChange or \
                 self._zinguoSwitch.warmingSwitch2StateChange or \
                 self._zinguoSwitch.windSwitchStateChange or \
@@ -111,6 +112,6 @@ class ZinguoUpdateManager(threading.Thread):
                 eventMsg[CONF_LIGHT_SWITCH] = self._zinguoSwitch.lightSwitchStateNew
             eventMsg[CONF_VENTILATION_SWITCH] = self._zinguoSwitch.ventilationSwitchStateNew
             _LOGGER.debug('ZINGUO : event msg:%s', json.dumps(eventMsg))
-            self._hass.bus.fire(CONF_EVENT_ZINGUO_STATE_CHANGE,json.dumps(eventMsg))
+            self._hass.bus.fire(CONF_EVENT_ZINGUO_STATE_CHANGE,eventMsg)
         else:
             _LOGGER.debug('ZINGUO : event not fire')
